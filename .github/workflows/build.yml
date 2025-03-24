@@ -1,0 +1,52 @@
+name: Build Chess Engine
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup C++ Compiler (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt update && sudo apt install -y g++ make
+
+      - name: Setup C++ Compiler (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: mingw-w64-x86_64-gcc make
+
+      - name: Build on Linux
+        if: runner.os == 'Linux'
+        run: g++ main.cpp board.cpp search.cpp -o KhanhChessEngine
+
+      - name: Build on Windows
+        if: runner.os == 'Windows'
+        run: |
+          g++ main.cpp board.cpp search.cpp -o KhanhChessEngine.exe
+
+      - name: Upload Linux binary
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v3
+        with:
+          name: KhanhChessEngine-Linux
+          path: KhanhChessEngine
+
+      - name: Upload Windows binary
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v3
+        with:
+          name: KhanhChessEngine-Windows
+          path: KhanhChessEngine.exe
