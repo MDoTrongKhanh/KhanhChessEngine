@@ -1,33 +1,35 @@
-#include <iostream>
-#include <string>
-#include <sstream>
+import sys
 
-void handle_position(std::string input) {
-    // Xử lý lệnh "position startpos" hoặc "position fen ..."
-    std::cout << "Position received: " << input << std::endl;
-}
+def uci():
+    print("id name KhanhChessEngine")
+    print("id author Do Trong Khanh")
+    print("uciok", flush=True)
 
-void handle_go() {
-    // Tạm thời trả về bestmove e2e4, sau này thay bằng thuật toán tìm nước đi
-    std::cout << "bestmove e2e4" << std::endl;
-}
+def isready():
+    print("readyok", flush=True)
 
-int main() {
-    std::string input;
-    while (std::getline(std::cin, input)) {
-        if (input == "uci") {
-            std::cout << "id name KhanhChessEngine" << std::endl;
-            std::cout << "id author Do Trong Khanh" << std::endl;
-            std::cout << "uciok" << std::endl;
-        } else if (input == "isready") {
-            std::cout << "readyok" << std::endl;
-        } else if (input.find("position") == 0) {
-            handle_position(input);
-        } else if (input.find("go") == 0) {
-            handle_go();
-        } else if (input == "quit") {
-            break;
-        }
-    }
-    return 0;
-}
+def position(command):
+    print(f"Position received: {command}", flush=True)
+
+def go():
+    print("bestmove e2e4", flush=True)
+
+def main():
+    while True:
+        try:
+            command = input().strip()
+            if command == "uci":
+                uci()
+            elif command == "isready":
+                isready()
+            elif command.startswith("position"):
+                position(command)
+            elif command == "go":
+                go()
+            elif command == "quit":
+                break
+        except EOFError:
+            break
+
+if __name__ == "__main__":
+    main()
